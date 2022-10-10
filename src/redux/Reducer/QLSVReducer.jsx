@@ -4,15 +4,72 @@ const stateDefault = {
         {maSV : "002" , tenSV : "Do Hoang YYY" , sdtSV : "123456789"  , emailSV : 'dhYYY@gmail.com'} ,
         {maSV : "003" , tenSV : "Do Hoang ZZZ" , sdtSV : "123456789"  , emailSV : 'dhZZZ@gmail.com'} ,
         {maSV : "004" , tenSV : "Do Hoang GGG" , sdtSV : "123456789"  , emailSV : 'dhGGG@gmail.com'} 
-    ]
+    ] , 
+    themSVBtn : true ,
+    detailsSV : {
+        maSV : '' ,
+        tenSV : '' ,
+        sdtSV : '' ,
+        emailSV : ''
+    }
 }
 export const QLSVReudcer = (state = stateDefault , action) => {
     // return state ; 
     // return {...state} ; 
     switch (action.type) {
-       
-    
-        default:
+        case 'THEM_SINH_VIEN' :
+            // console.log('action' , action) ; 
+            state.mangSinhVien = [...state.mangSinhVien , action.svThem ] ; 
+            
+            return {...state} ;
+        case 'XOA_SINH_VIEN' :
+            // console.log('action' , action) ; 
+            let index = state.mangSinhVien.findIndex((sv)=>{
+                return sv.maSV === action.maSvXoa
+            })
+            if(index > -1){
+                state.mangSinhVien.splice(index , 1) ; 
+                state.mangSinhVien =[ ...state.mangSinhVien] ; 
+            }else {
+                alert("Not Found !") ; 
+            }
+            return {...state} ;
+        case 'XEM_CHI_TIET' :
+            // console.log('action' , action) ; 
+            let svFind = state.mangSinhVien.find((sv)=>{
+                return sv.maSV === action.maSvDetail ; 
+            })
+            if(svFind){
+                // console.log('svFind' , svFind) ;
+                state.detailsSV = {...svFind} ; 
+                state.themSVBtn = false ; 
+                // console.log('detail sv' ,  state.detailsSV ) ; 
+            }else {
+                alert("Not found !"); 
+            }
+            return {...state} ; 
+        
+        case 'UPDATE_SV' : 
+            state.themSVBtn = true ; 
+            state.detailsSV = {
+                maSV : '' ,
+                tenSV : '' ,
+                sdtSV : '' ,
+                emailSV : ''
+            }
+            state.detailsSV = {...state.detailsSV} ;
+            console.log('action'  , action) ;  
+            let indexUpdate = state.mangSinhVien.findIndex((sv)=>{
+                return sv.maSV === action.svCapNhat.maSV ;
+            })
+            if(indexUpdate > -1){
+                state.mangSinhVien[indexUpdate] = action.svCapNhat; 
+                state.mangSinhVien = [...state.mangSinhVien] ; 
+            }else {
+                alert("ST Wrong !") ; 
+            }
+            return {...state} ; 
+            default:
             return state ;
     }
 }
