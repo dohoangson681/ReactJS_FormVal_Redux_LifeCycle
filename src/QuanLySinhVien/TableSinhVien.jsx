@@ -102,31 +102,23 @@ class TableSinhVien extends Component {
     let ele = event.target ;
     let {value} = ele ; 
     let keywordSearch = removeVietnameseTones(value).toLowerCase() ;
-    console.log('keywordSearch' , keywordSearch)  
     let mangTK = [] ;
     if(value.trim() === ""){
       mangTK = [] ;
-      console.log('mangTK' , mangTK) ; 
     }else {
       mangTK = this.props.mangSinhVien.filter((sv)=>{
         let svName = removeVietnameseTones(sv.tenSV).toLowerCase() ;
-        console.log('svName' , svName) ; 
         let index = svName.indexOf(keywordSearch) ; 
-        console.log('index' , index) ; 
         if(index > -1) return sv ;
         else console.log('not found in arr !') ; 
-      }) 
-      console.log('mangTK' , mangTK) ; 
+      })  
     }
     this.setState({
       searchKeyword : value , 
       searchArr : mangTK
-    } , ()=>{
-      console.log(this.state.searchArr) ; 
     })
   }
   render() {
-    // console.log(this.props);
     return (
       <Fragment>
         <nav className="navbar navbar-light bg-transparent">

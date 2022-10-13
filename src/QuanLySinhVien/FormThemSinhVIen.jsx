@@ -35,18 +35,12 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
   }
   handleInputChange = (e) => {
     let currentEle = e.target ; 
-    // console.log('currentEle' , currentEle) ; 
-    // console.log(currentEle.name) ;
-    // console.log(currentEle.value) ; 
     let {name , value} = currentEle ; 
     let newValues = {...this.state.values , [name] : value} ;
     let errorMessage = '' ; 
-    // kiem tra rong
     if(value.trim() === "") {
       errorMessage = "*Trường này không được để trống !"
     }else {
-      // nếu các trường đã được điền đầy đủ rồi thì check xem dữ liệu trong các trường đã valid hay chưa
-      // validation
     switch (e.target.getAttribute("typeinput")) {
       case 'maSV':
           if(!value.match(regexMaSV)) errorMessage = '*Mã sinh viên không hợp lệ !'
@@ -63,7 +57,6 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
       default:
         break;
     }
-    // end validation
     }
 
     
@@ -79,55 +72,52 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
   handleSubmit = (e) => {
     e.preventDefault() ; 
     let isValid = true ; 
-    console.log('this.state' , this.state) ; 
-    // check xem maSV co bi trung khong
-    // let index = this.props.mangSinhVien.findIndex((sv)=>{
-    //   return sv.maSV === this.state.values.maSV;
-    // })
-    // if(index > -1){
-    //   alert("Mã sinh viên không được trùng !") ; 
-    //   isValid = false ; 
-    // }
+    console.log('this.state' , this.state) ;
     for (const key in this.state.values) {
-      // console.log(this.state.values[key]) ;
       if(this.state.values[key] === ""){
         isValid = false ;
         break ; 
       }
     }
     for (const key in this.state.errors) {
-      // console.log(this.state.errors[key]) ;
       if(this.state.errors[key] !== ""){
         isValid = false ;
         break ; 
       }
     }
-    // console.log('isValid' , isValid) ; 
+    let alertMessUpdate = "" ; 
+    let alertMessAdd = "Các trường không hợp lệ !" ; 
+    let maSVNew  = this.state.values.maSV ; 
+    if(this.props.stateBtn){ 
+      for(let i = 0 ; i <  this.props.mangSinhVien.length ; i++){
+        if(maSVNew === this.props.mangSinhVien[i].maSV ){
+            isValid = false ;
+            alertMessAdd = "Mã sinh viên không thể bị trùng !" ; 
+              break;
+        }else {
+          alertMessAdd = "Không được để trống các trường thông tin !" ;
+        }
+    }
+    }
+
     if(isValid && this.props.stateBtn ){
       this.props.themSV(this.state.values) ;
     }else if(isValid && !this.props.stateBtn){
       this.props.updateSV(this.state.values) ; 
+    }else if (!this.props.stateBtn){
+      alert(alertMessUpdate) ; 
     }else {
-      alert("Sextop1.net") ; 
+      alert(alertMessAdd) ;
     }
   }
 
   static getDerivedStateFromProps(newProps , currentState){
-    console.log('getDerivedStateFromProps') ; 
-    console.log('newProps' ,newProps) ;
-    console.log('currentState' , currentState) ; 
-    // if(){}
     if(newProps.detailSV.maSV !== currentState.values.maSV && newProps.detailSV.maSV.trim() !== "" ){
       return {...currentState , values : newProps.detailSV }
     }
     return currentState ; 
   }
   render() {
-    // console.log('stateBtn' , this.props.stateBtn) ; 
-    console.log('render') ;
-    // !! console.log('detailSV' , this.props.detailSV) ; 
-    // !! let {maSV , tenSV , sdtSV , emailSV} = this.props.detailSV ; 
-    console.log('this.state.values' , this.state.values) ; 
     let {maSV , tenSV , sdtSV , emailSV} = this.state.values ; 
     return (
       <div className="card text-left mt-5 mb-3">
@@ -144,7 +134,6 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
             })
           }}>
             <div className="row">
-              {/* mã sinh viên  */}
               <div className="col-6">
                 <input
                   type="text"
@@ -159,7 +148,6 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
                 />
                  <span className="text-warning">{this.state.errors.maSV}</span>
               </div>
-              {/* họ và tên  */}
               <div className="col-6">
                 <input
                   type="text"
@@ -176,7 +164,6 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
               </div>
             </div>
             <div className="row mt-3">
-              {/* số điện thoại  */}
               <div className="col-6">
                 <input
                   type="text"
@@ -191,7 +178,6 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
                 />
                  <span className="text-info">{this.state.errors.sdtSV}</span>
               </div>
-              {/* email sinh viên  */}
               <div className="col-6">
                 <input
                   type="text"
@@ -215,12 +201,6 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
             </div>
           </form>
         </div>
-        {/* <div className="card-footer">
-          
-          <button className="btn btn-primary">Cập nhật</button>
-          {this.renderButton()}
-
-        </div> */}
       </div>
     );
   }
@@ -228,16 +208,12 @@ let regexEmail = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/ ;
 const mapDispatchToProps = (sendStrReq) => {
   return {
     themSV : (sv) => {
-      // console.log('them sinh vien') ; 
-      // console.log('sinh vien' , sv) ; 
       sendStrReq({
         type : "THEM_SINH_VIEN" , 
         svThem : sv
       })
     },
     updateSV : (sv) => {
-      // console.log("Update SV") ; 
-      // console.log(sv) ; 
       sendStrReq({
         type : "UPDATE_SV" ,
         svCapNhat : sv
